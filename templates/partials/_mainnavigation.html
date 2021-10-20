@@ -1,0 +1,106 @@
+<!-- Main Sidebar Container -->
+<!--<aside class="main-sidebar sidebar-dark-primary elevation-4">-->
+<!-- Brand Logo -->
+<!--<a href="index3.html" class="brand-link">
+        <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <span class="brand-text font-weight-light">AdminLTE 3</span>
+    </a>
+</aside>-->
+
+<!-- @using static ExportToExcel.Helpers.NavigationIndicatorHelper; -->
+
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4" style="overflow-x: hidden; height: 100%">
+    <a href="~/Home" class="brand-link">
+        <img src="~/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+             style="opacity: .8">
+        <span class="brand-text font-weight-light">CashManagement</span>
+    </a>
+    <div class="sidebar">
+        <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+            <div class="image">
+                <img src="~/img/user2.jpg" class="img-circle elevation-2" alt="User Image">
+            </div>
+            <div class="info">
+                <a href="#" class="d-block">Reports</a>
+            </div>
+        </div>
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <li class="nav-item ">
+                    <a asp-controller="Home" asp-action="Index" class="nav-link">
+                        <i class="nav-icon fas fa-home"></i>
+                        <p>
+                            Home
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a asp-controller="Home" asp-action="Privacy" class="nav-link">
+                        <i class="nav-icon fas fa-lock"></i>
+                        <p>
+                            Privacy
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a asp-controller="Add" asp-action="AddBalances" class="nav-link" href="{% url 'dashboard:addopeningbalance' %}">
+                        <i class="nav-icon fas fa-money-check-alt"></i>
+                        <p>
+                            Opening Balance
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a asp-controller="Add" asp-action="AddCommitments" class="nav-link" href="{% url 'dashboard:savecommitment' %}">
+                        <i class="nav-icon fas fa-handshake"></i>
+                        <p>
+                            Commitment
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a asp-controller="Add" asp-action="Create" class="nav-link" href="{% url 'dashboard:addreceivableamount' %}">
+                        <i class="nav-icon fas fa-money-bill-wave"></i>
+                        <p>
+                            Receivable Amount
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a asp-controller="Add" asp-action="AddYear" class="nav-link" href="{% url 'dashboard:addyear' %}">
+                        <i class="nav-icon fas fa-calendar-day"></i>
+                        <p>
+                            Year
+                        </p>
+                    </a>
+                </li>
+
+                <li class="nav-item ">
+                    <a asp-controller="CashReport" asp-action="Index" class="nav-link" href="{% url 'cashreport:DailyReport' %}">
+                        <i class="nav-icon fas fa-file-archive"></i>
+                        <p>
+                            Report
+                        </p>
+                    </a>
+                </li>
+                <li class="nav-item ">
+                    <a asp-area="Identity" asp-page="/Account/Register" class="nav-link" href="{% url 'cashreport:DailyReport' %}">
+                        <i class="nav-icon fas fa-registered"></i>
+                        <p>
+                            Creating Account
+                        </p>
+
+                       
+                    </a>
+                    <!-- <a asp-controller="Home" asp-action="Register" class="nav-link">
+                            <i class="nav-icon fas fa-registered"></i>
+                            <p>
+                                Creating Account
+                            </p>
+                        </a> -->
+                </li>
+            </ul>
+        </nav>
+    </div>
+</aside>

@@ -1,0 +1,110 @@
+{% extends 'partials/base.html' %}
+{% block title %}Commitment Page{% endblock %}
+
+{% block content %}
+   <br>
+    <!-- <section id="commimtment" class="bg-light py-5"> -->
+        <div class="container">
+          <div class="row">
+            <div class="col-md-12 col-lg-9">
+              <div class="card card-primary card-outline">
+                <!-- <div class="card-header bg-primary text-white">
+                  <h4>
+                    <i class="fas fa-user-plus"></i> Register</h4>
+                </div> -->
+                <div class="card-body">
+                    
+                    <form action="{% url 'dashboard:save_commit' %}" method="POST">
+                        {% csrf_token %}
+                    <!-- <div class="form-group" style="display: flex;">
+                      <label class="col-sm-2 text-left" for="first_name">Amount</label>
+                      <input type="text" name="first_name" class="col-sm-10 field-amount" required>
+                    </div> -->
+                    <div class="form-group">
+                      <label for="last_name">Amount</label>
+                      <input type="text" name="amount" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="username">Donor Name</label>
+                      <input type="text" name="donername" class="form-control" required>
+                    </div>
+                    <div class="dropdown">
+                        <label for="year">Year</label>
+                        <select class="form-control" name="year">
+                            <option selected="selected" disabled>Select year</option>
+                            {% for year in years %}
+                                    <option value="{{year.id}}">{{year.fiscal_year}}</option>
+                            {% endfor %}
+                            </select>
+                        </div>
+                      </div>
+                    <input type="submit" value="Save" class="btn btn-secondary btn-block">
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <hr>
+        <!-- <div class="contianer">
+        <form>
+            <div class="form-group">
+              <label for="exampleInputEmail1">Email address</label>
+              <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+              <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+            <div class="form-group">
+              <label for="exampleInputPassword1">Password</label>
+              <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+            </div>
+            <div class="form-group form-check">
+              <input type="checkbox" class="form-check-input" id="exampleCheck1">
+              <label class="form-check-label" for="exampleCheck1">Check me out</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div> -->
+
+        <!-- <div class="container">
+            <!-- Horizonatal Form -->
+            <div class="row">
+              <div class="col-xs-6">
+                <form class="form-horizontal">
+                  <div class="form-group">
+                    <label for="nameField" class="col-xs-2">Name</label>
+                    <div class="col-xs-10">
+                      <input type="text" class="form-control" id="nameField" placeholder="Your Name" />
+                    </div>
+                  </div>
+                
+                  <div class="form-group">
+                    <label for="emailField" class="col-xs-2">Email</label>
+                    <div class="col-xs-10">
+                      <input type="email" class="form-control" id="emailField" placeholder="Your Email" />
+                    </div>
+                  </div>
+                
+                  <div class="form-group">
+                    <label for="phoneField" class="col-xs-2">Phone</label>
+                    <div class="col-xs-10">
+                      <input type="text" class="form-control" id="phoneField" placeholder="Your Phone Number" />
+                    </div>
+                  </div>
+                
+                  <div class="form-group">
+                    <label for="descField" class="col-xs-2">Description</label>
+                    <div class="col-xs-10">
+                      <textarea type="text" class="form-control" id="descField" placeholder="Your Comments"></textarea>
+                    </div>
+                  </div>
+                  
+                  <div class="col-xs-10 col-xs-offset-2">
+                    <button type="submit" class="btn btn-primary">Submit</button> <button type="reset" class="btn btn-default">Reset</button>
+                  </div>
+                  
+                </form>
+              </div>
+            </div>
+          </div> -->
+      <!-- </section> -->
+{% endblock %}

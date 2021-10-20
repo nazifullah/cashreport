@@ -1,0 +1,416 @@
+{% extends 'partials/base.html' %}
+{% load humanize %}
+{% load custom_filters %}
+{% block title %}Daily Report{% endblock %}
+{% load jalali_tags %}
+
+
+
+
+
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <style>
+        table {
+            border: 2px solid black !important;
+        }
+    
+            table.GeneratedTable {
+                width: 90%;
+                background-color: #ffffff;
+                border-collapse: collapse;
+                border-width: 2px;
+                border-style: solid;
+                color: #000000;
+            }
+    
+                table.GeneratedTable td,
+                table.GeneratedTable th {
+                    border-width: 2px;
+                    border-style: solid;
+                    padding: 3px;
+                }
+    
+        .aligncenter {
+            text-align: center !important;
+        }
+    
+        table.GeneratedTable thead {
+            background-color: #ffffff !important;
+        }
+    
+        .borderless {
+            border: none !important;
+            border: 0px solid black !important;
+        }
+    
+        .borderleft {
+            border-left: 2px solid !important;
+        }
+    
+        .grey {
+            background-color: gray !important;
+        }
+    
+        .bordertop {
+            border-top: 1px solid !important;
+        }
+    
+        .borderbottom {
+            border-bottom: 1px solid !important;
+        }
+    </style>
+
+    <title>Table</title>
+
+
+</head>
+<body>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.24/css/jquery.dataTables.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.7.0/css/buttons.dataTables.min.css">
+    
+    <div class="container">
+        <a href="{% url 'cashreport:export-pdf' %}" class="btn btn-secondary">Export PDF</a>
+        <a href="{% url 'cashreport:export-csv' %}" class="btn btn-info">Export CSV</a>
+        <a href="{% url 'cashreport:export-excel' %}" class="btn btn-secondary">Export Excel</a>
+        <br>
+        <form action="{% url 'cashreport:DailyReport' %}" method="post">
+            {% csrf_token %}
+            <input type="text"  name="test" value="{{  testdate }}">
+            <input type="text"  name="test" value="{{  testjalali }}">
+            <input  type="date" id="datepicker" name="date" placeholder="yyyy-mm-dd" >
+        <input type="submit" value="Search" class="btn btn-secondary">
+        </form>
+        
+        <!-- <input  type="search" id="datepicker"> -->
+<table class="GeneratedTable container" id="myDataTable">
+    <thead>
+        <tr>
+            <th class="aligncenter" colspan="5">TREASURY DAILY CASH POSITION REPORT - DRAFT</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td colspan="1"></td>
+            <td class="aligncenter" colspan="4"> {% now "jS F Y" %}</td>
+            <!-- <td class="aligncenter" colspan="4"> Current datetime:{% now "jS F Y H:i" %}</td> -->
+        </tr>
+        <tr>
+            <td colspan="1">I</td>
+            <td class="aligncenter" colspan="4">SUMMARY OF DISCRETIONARY FUNDS (UNRESTRICTED)</td>
+        </tr>
+        <tr>
+            <td rowspan="8"></td>
+            <td class="aligncenter" colspan="2">ACOUNTS</td>
+            <td class="aligncenter">OPENING</td>
+            <td class="aligncenter">CURRENT</td>
+        </tr>
+        {% for openbalanc in openquerset %}
+        <tr class="alignleft">
+            <td colspan="2" class="borderless ">{{openbalanc.account_name}} </td>
+            <td class="borderless borderleft">{{ openbalanc.opening_amount|show_only_nums:"5" |intcomma }}</td>
+            <td class="borderless borderleft">{{17201 | intcomma}} </td>
+        </tr>
+        {% endfor %} 
+        <tr>
+            <td colspan="2">AGGREGATE BALANCE  - UNRESTRICTED FUNDS</td>
+            
+            <td class="aligncenter">{{totalofopening |show_only_nums:"5" |intcomma}}</td>
+            <td class="aligncenter"></td>
+        </tr>
+    </tbody>
+
+    <!-- second section -->
+    <tbody>
+        <tr>
+            <td colspan="1">II</td>
+            <td class="aligncenter" colspan="4">SUMMARY OF SOURCES AND USE OF FUNDS DURING THE YEAR</td>
+        </tr>
+        <tr>
+            <td rowspan="15"></td>
+            <td colspan="2">Opening  Balance Of  Unrestricted Funds (FY 1400)  Excl Floor Limit & Exchange Gain</td>
+            <td colspan="2">{{openquerset.0 |show_only_nums:"5"| intcomma }}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="borderless">
+                Daily Revenue Collection
+            </td>
+            <td class="borderless borderleft" colspan="2">{{queryset.0.revenue |show_only_nums:"5" | intcomma}} </td>
+
+</tr>
+
+<tr>
+
+<td colspan="2" class="borderless">
+                Total Domestic Revenues collected (Operating Budget)
+            </td>
+            <td class="borderless borderleft" colspan="2">{{ queryset.0.totaldemrev |show_only_nums:"5" | intcomma}}</td>
+        </tr>
+        <tr></tr>
+
+        <tr>
+            <td colspan="2" class="borderless bordertop">
+                Donors Grants (Operating & Dev)
+            </td>
+            <td class="borderless borderleft bordertop" colspan="2">{{ queryset.0.donrgrntoptdev |show_only_nums:"5" | intcomma}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="borderless">Unspent Grants (MOD & MOI Advances)</td>
+            <td class="borderless borderleft" colspan="2">{{queryset.0.unspentgrnt |show_only_nums:"5" | intcomma}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="borderless">Net  Receipts -  Donor Grants (1400)</td>
+            <td class="borderless borderleft" colspan="2">{{ netReceiptsDonorGrants |show_only_nums:"5" | intcomma}}</td>
+        </tr>
+
+        <tr>
+            <td colspan="2" class="">Loan from IMF</td>
+            <td class="" colspan="2">{{ queryset.0.frrimfloan |show_only_nums:"5"| intcomma}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="">Other Receipts (ARTF + Disc - Returns)</td>
+            <td colspan="2" class="">{{ queryset.0.otherreceipts |show_only_nums:"5"| intcomma}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="">Total Receipts 1400 (Domestic Revenues + Donors Grants + Loans)</td>
+            <td class="" colspan="2">{{ queryset.otherreceipts| intcomma}}</td>
+        </tr>
+
+        <tr>
+            <td colspan="2" class="borderless">Transfers to Discretionary Development Budget Expenditures</td>
+            <td class="borderless borderleft" colspan="2">{{ queryset.0.trddbe |show_only_nums:"5" | intcomma}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="borderless">Total Recurrent Budget Expenditures (Including Cash Transfer To Provinces</td>
+           <td class="borderless borderleft" colspan="2">{{ queryset.0.totrbexpenditure |show_only_nums:"5"| intcomma}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="borderless bordertop">
+                Balance of Total Receipts (1400) & Expenditure
+            </td>
+            <td class="borderless borderleft bordertop" colspan="2">{{ 111111| intcomma}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="borderless">Balance of Unrestricted Funds (Opening Balance + Total Receipts 1400) - Expenditures</td>
+            <td class="borderless borderleft borderbottom" colspan="2">{{ 111111| intcomma}}</td>
+        </tr>
+    </tbody>
+
+    <!-- THIRD SECTION -->
+    <tbody>
+        <tr>
+            <td colspan="1">III</td>
+            <td class="aligncenter" colspan="4">FUNDS AVAILABLE UNDER THE DISCRETIONARY DEVELOPMENT BUDGET</td>
+        </tr>
+        <tr>
+            <td rowspan="15"></td>
+            <td class="aligncenter" colspan="2">CASH POSITION</td>
+            <td class="aligncenter" colspan="2">BUDGET AND ALLOTMENT</td>
+        </tr>
+        <tr>
+            <td class="">Opening Balance (1400 balance)</td>
+            <td class="">{{openquerset.1 |show_only_nums:"5"| intcomma }}</td>
+            <td class="">Total Approved Budget</td>
+            <td class="">{{ queryset.0.batab |show_only_nums:"5"| intcomma}}</td>
+        </tr>
+        <tr>
+            <td class="">Receipts</td>
+            <td class="">0</td>
+            <td class="">Total Allotments released</td>
+            <td class="">{{ queryset.0.batar |show_only_nums:"5"| intcomma}}</td>
+        </tr>
+        <tr>
+            <td class="">Total Funds Available</td>
+            <td class="">{{TotalFundsAvailable |show_only_nums:"5"| intcomma }}</td>
+            <td class="">Expenditures</td>
+           <td class="">{{ queryset.0.baexpenditure |show_only_nums:"5"| intcomma}}</td>
+          
+        </tr>
+        <tr>
+            <td class="">Expenditures</td>
+            <td class="">{{ queryset.0.baexpenditure |show_only_nums:"5"| intcomma}}</td>
+            <td class="">Unspent Allotment</td>
+            <td class="">{{ queryset.0.bauspenta |show_only_nums:"5"| intcomma}}</td>
+        </tr>
+        <tr>
+            <td class="grey">Net Funds Available</td>
+            <td class="grey">To Be Fixed</td>
+            <td class="grey">Allotments' Cash Requirement</td>
+            <td class="grey">To Be Fixed</td>
+        </tr>
+    </tbody>
+
+    <!-- FOURTH SECTION -->
+    <tbody>
+        <tr>
+            <td colspan="1">IV</td>
+            <td class="aligncenter" colspan="4"> FUNDS RECEIVABLE (DOMISTIC REVENUE AND DONOR COMMITMENTS)</td>
+        </tr>
+        <tr>
+            <td rowspan="23"></td>
+            <td class="aligncenter">Sources</td>
+            <td class="aligncenter">Receivables</td>
+            <td class="aligncenter">Receipts</td>
+            <td class="aligncenter">Balance</td>
+        </tr>
+        <tr class="grey">
+            <td class="">Operating Budget</td>
+            <td class="">{{opbudget |show_only_nums:"5" |intcomma}} </td>
+            <td class="">{{opbugetreceips |show_only_nums:"5" |intcomma }} </td>
+            <td class="">{{opbudgetbalance |show_only_nums:"5" |intcomma }} </td>
+        </tr>
+        <tr>
+            <td class="">Domestic Revenues</td>
+            <td class="">{{receivequeryset.0.recieveable_amount |show_only_nums:"5"| intcomma }}</td>
+            <td class="">{{ queryset.0.totaldemrev |show_only_nums:"5" | intcomma}}</td>
+            <td class="">{{demosticrevenuebalance |show_only_nums:"5"| intcomma  }}</td>
+        </tr>
+        <tr>
+            <td class="">Grants (Operating Budget)</td>
+            <td class="">{{grantsoperatingbudget |show_only_nums:"5"|intcomma}}</td>
+            <td class="">{{grantoperatingbudgetreceipts |show_only_nums:"5" |intcomma}}</td>
+            <td class="">{{ grantsopbdtbalance |show_only_nums:"5" |intcomma }}</td>
+        </tr>
+        <!-- new section -->
+        <tr>
+            <td class="borderless">LOTFA</td>
+            <td class="">{{receivequeryset.1.recieveable_amount |show_only_nums:"5"| intcomma }}</td>
+            <td class="">{{ queryset.0.frrlotfa |show_only_nums:"5" | intcomma}}</td>
+            <td class="">{{lotfabalance |show_only_nums:"5" | intcomma}}</td>
+        </tr>
+        <tr>
+            <td class="borderless">CSTC-A MOD</td>
+            <td class="">{{receivequeryset.2.recieveable_amount |show_only_nums:"5"| intcomma }}</td>
+            <td class="">{{ queryset.0.frrctamod |show_only_nums:"5" | intcomma}}</td>
+            <td class="">{{cstcamodbalance |show_only_nums:"5" | intcomma}}</td>
+        </tr>
+        <tr>
+            <td class="borderless">CSTC-A MOI</td>
+            <td class="">{{receivequeryset.3.recieveable_amount |show_only_nums:"5"| intcomma }}</td>
+            <td class="">{{ queryset.0.frrctamoi|show_only_nums:"5" | intcomma}}</td>
+            <td class="">{{cstcamoibalance |show_only_nums:"5" | intcomma }}</td>
+        </tr>
+        <tr>
+            <td class=""> TDF </td>
+            <td class="">{{receivequeryset.4.recieveable_amount |show_only_nums:"5"| intcomma }}</td>
+            <td class="">{{ queryset.0.frrtdf |show_only_nums:"5" | intcomma}}</td>
+             <td class="">{{tdfbalance |show_only_nums:"5" | intcomma}}</td>
+        </tr>
+        <tr>
+            <td class="">IMF - Loan </td>
+                <td class="">{{receivequeryset.5.recieveable_amount |show_only_nums:"5"| intcomma }}</td>
+                <td class="">{{ queryset.0.frrimfloan |show_only_nums:"5" | intcomma}}</td>
+                <td class="">{{imfloanbalance |show_only_nums:"5" | intcomma }}</td>
+        </tr>
+        <tr class="grey">
+            <td class="">Disc - Development (Grants)</td>
+            <td class="">(0, 5)</td>
+            <td class="">Cell</td>
+            <td class="">Cell</td>
+        </tr>
+        <tr>
+            <td class="">European Commission</td>
+            <td class="">(0, 5)</td>
+            <td class=""></td>
+            <td class=""></td>
+        </tr>
+        <tr style="height: 25px">
+            <td class="">ARTF (IP +)</td>
+            <td class="">890</td>
+            <td class="">(0, 5)</td>
+            <td class=""></td>
+        </tr>
+    
+        <tr>
+            <td class=""> European Commission (Refugee Return)</td>
+            <td class="">THIRD</td>
+            <td class="">Cell</td>
+            <td class="">Cell</td>
+        </tr>
+        <tr>
+            <td class=""> US - Development Aids</td>
+            <td class="">THIRD</td>
+            <td class="">Cell</td>
+            <td class="">Cell</td>
+        </tr>
+        <tr>
+            <td class="">Cash Reserves</td>
+            <td class="">THIRD</td>
+            <td class="">Cell</td>
+            <td class="">Cell</td>
+        </tr>
+        <tr class="grey">
+            <td rowspan="2" class="">Non-Disc - Development (Grants)</td>
+            <td class="aligncenter">Commitment</td>
+            <td class="aligncenter">Expenditure</td>
+            <td class="aligncenter">Balance</td>
+        </tr>
+        <tr class="grey">
+            <td class="">{{ totalcommitment|show_only_nums:"5"| intcomma }}</td>
+            <td class="">{{ totalexpenditure |show_only_nums:"5" | intcomma}}</td>
+            <td class="">{{totalbalance |show_only_nums:"5" | intcomma }}</td>
+        </tr>
+        <tr>
+            <td class="">ARTF / World Bank</td>
+            <td class="">{{commitqueryset.0.amount |show_only_nums:"5"| intcomma }}</td>
+            <td class="">{{ queryset.0.freartfwb |show_only_nums:"5" | intcomma}}</td>
+            <td class="">{{ balanceartfwb |show_only_nums:"5" | intcomma }}</td>
+        </tr>
+        <tr>
+            <td class="">Asian Development Bnak (ADB)</td>
+            <td class="">{{commitqueryset.1.amount |show_only_nums:"5"| intcomma }}</td>
+            <td class="">{{ queryset.0.freadb |show_only_nums:"5" | intcomma}}</td>
+            <td class="">{{balanceadb |show_only_nums:"5" | intcomma }}</td>
+        </tr>
+        <tr>
+            <td class="">US & USAID</td>
+            <td class="">{{commitqueryset.2.amount |show_only_nums:"5"| intcomma }}</td>
+            <td class="">{{ queryset.0.freusaid |show_only_nums:"5" | intcomma}}</td>
+            <td class="">{{balanceusaid |show_only_nums:"5" | intcomma }}</td>
+        </tr>
+        <tr>
+            <td class="">Other Donors</td>
+            <td class="">{{commitqueryset.3.amount |show_only_nums:"5"| intcomma }}</td>
+            <td class="">{{ queryset.0.freotherdonrs |show_only_nums:"5" | intcomma}}</td>
+            <td class="">{{balanceotherdonors |show_only_nums:"5" | intcomma }}</td>
+        </tr>
+
+
+
+    </tbody>
+</table>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.24/js/jquery.dataTables.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.7.0/js/dataTables.buttons.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.html5.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.7.0/js/buttons.print.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#myDataTable').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'csv', 'print'
+            ]
+        });
+    });
+
+  </script>
+
+</body>
+
+</html>
+{% endblock content %}

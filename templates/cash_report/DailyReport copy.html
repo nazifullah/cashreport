@@ -1,0 +1,396 @@
+{% extends 'partials/base.html' %}
+{% load humanize %}
+{% block title %}Daily Report{% endblock %}
+
+
+
+
+
+{% block content %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <style>
+        table {
+            border: 2px solid black !important;
+        }
+    
+            table.GeneratedTable {
+                width: 90%;
+                background-color: #ffffff;
+                border-collapse: collapse;
+                border-width: 2px;
+                border-style: solid;
+                color: #000000;
+            }
+    
+                table.GeneratedTable td,
+                table.GeneratedTable th {
+                    border-width: 2px;
+                    border-style: solid;
+                    padding: 3px;
+                }
+    
+        .aligncenter {
+            text-align: center !important;
+        }
+    
+        table.GeneratedTable thead {
+            background-color: #ffffff !important;
+        }
+    
+        .borderless {
+            border: none !important;
+            border: 0px solid black !important;
+        }
+    
+        .borderleft {
+            border-left: 2px solid !important;
+        }
+    
+        .grey {
+            background-color: gray !important;
+        }
+    
+        .bordertop {
+            border-top: 1px solid !important;
+        }
+    
+        .borderbottom {
+            border-bottom: 1px solid !important;
+        }
+    </style>
+
+    <title>Table</title>
+
+</head>
+<body>
+    <div class="container">
+<table class="GeneratedTable container" id="myDataTable">
+    <thead>
+        <tr>
+            <th class="aligncenter" colspan="5">TREASURY DAILY CASH POSITION REPORT - DRAFT</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td colspan="1"></td>
+            <td class="aligncenter" colspan="4"> {% now "jS F Y" %}</td>
+            <!-- <td class="aligncenter" colspan="4"> Current datetime:{% now "jS F Y H:i" %}</td> -->
+        </tr>
+        <tr>
+            <td colspan="1">I</td>
+            <td class="aligncenter" colspan="4">SUMMARY OF DISCRETIONARY FUNDS (UNRESTRICTED)</td>
+        </tr>
+        <tr>
+            <td rowspan="8"></td>
+            <td class="aligncenter" colspan="2">ACOUNTS</td>
+            <td class="aligncenter">OPENING</td>
+            <td class="aligncenter">CURRENT</td>
+        </tr>
+        
+        <tr class="alignleft">
+            <td colspan="2" class="borderless ">Unrestricted Funds in TSA </td>
+            <td class="borderless borderleft">{{ openquerset.opening_amount | intcomma}}</td>
+            <td class="borderless borderleft">{{17201 | intcomma}} </td>
+        </tr>
+        <tr>
+            <td colspan="2" class="borderless">Discretionary Development Funds (Code 20,000) </td>
+            <td class="borderless borderleft"> {{3887 | intcomma}} </td>
+            <td class="borderless borderleft"> {{3131 | intcomma}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="borderless">Balance in Provinces (Unspent Funds)</td>
+            <td class="borderless borderleft">{{0000 | intcomma}}</td>
+            <td class="borderless borderleft">{{0000 | intcomma}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="borderless">Cash Reserves Exchange Gain</td>
+            <td class="borderless borderleft">{{10624 | intcomma}}</td>
+            <td class="borderless borderleft">{{10624 | intcomma}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="borderless">Floor limit (minimum threshold of Treasury Funds)</td>
+           <td class="borderless borderleft">{{ 10000 | intcomma}}</td>
+            <td class="borderless borderleft">{{ 10000| intcomma}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="grey">
+                AGGREGATE BALANCE - UNRESTRICTED FUNDS
+            </td>
+            <td class="grey">{{ 31814| intcomma}}</td>
+            <td class="grey">{{51937 | intcomma}}</td>
+        </tr>
+    </tbody>
+
+    <!-- second section -->
+    <tbody>
+        <tr>
+            <td colspan="1">II</td>
+            <td class="aligncenter" colspan="4">SUMMARY OF SOURCES AND USE OF FUNDS DURING THE YEAR</td>
+        </tr>
+        <tr>
+            <td rowspan="15"></td>
+            <td colspan="2">Opening  Balance Of  Unrestricted Funds (FY 1400)  Excl Floor Limit & Exchange Gain</td>
+            <td colspan="2">{{7303 | intcomma}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="borderless">
+                Daily Revenue Collection
+            </td>
+            <td class="borderless borderleft" colspan="2">{{768 | intcomma}} </td>
+
+</tr>
+
+<tr>
+
+<td colspan="2" class="borderless">
+                Total Domestic Revenues collected (Operating Budget)
+            </td>
+            <td class="borderless borderleft" colspan="2">{{ queryset.totaldemrev | intcomma}}</td>
+        </tr>
+        <tr></tr>
+
+        <tr>
+            <td colspan="2" class="borderless bordertop">
+                Donors Grants (Operating & Dev)
+            </td>
+            <td class="borderless borderleft bordertop" colspan="2">{{ queryset.donrgrntoptdev | intcomma}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="borderless">Unspent Grants (MOD & MOI Advances)</td>
+            <td class="borderless borderleft" colspan="2">{{queryset.unspentgrnt | intcomma}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="borderless">Net  Receipts -  Donor Grants (1400)</td>
+            <td class="borderless borderleft" colspan="2">{{ queryset.otherreceipts| intcomma}}</td>
+        </tr>
+
+        <tr>
+            <td colspan="2" class="">Loan from IMF</td>
+            <td class="" colspan="2">{{ queryset.frrimfloan| intcomma}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="">Other Receipts (ARTF + Disc - Returns)</td>
+            <td colspan="2" class="">{{ queryset.otherreceipts| intcomma}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="">Total Receipts 1400 (Domestic Revenues + Donors Grants + Loans)</td>
+            <td class="" colspan="2">{{ queryset.otherreceipts| intcomma}}</td>
+        </tr>
+
+        <tr>
+            <td colspan="2" class="borderless">Transfers to Discretionary Development Budget Expenditures</td>
+            <td class="borderless borderleft" colspan="2">{{ queryset.trddbe| intcomma}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="borderless">Total Recurrent Budget Expenditures (Including Cash Transfer To Provinces</td>
+           <td class="borderless borderleft" colspan="2">{{ queryset.totrbexpenditure| intcomma}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="borderless bordertop">
+                Balance of Total Receipts (1400) & Expenditure
+            </td>
+            <td class="borderless borderleft bordertop" colspan="2">{{ 111111| intcomma}}</td>
+        </tr>
+        <tr>
+            <td colspan="2" class="borderless">Balance of Unrestricted Funds (Opening Balance + Total Receipts 1400) - Expenditures</td>
+            <td class="borderless borderleft borderbottom" colspan="2">{{ 111111| intcomma}}</td>
+        </tr>
+    </tbody>
+
+    <!-- THIRD SECTION -->
+    <tbody>
+        <tr>
+            <td colspan="1">III</td>
+            <td class="aligncenter" colspan="4">FUNDS AVAILABLE UNDER THE DISCRETIONARY DEVELOPMENT BUDGET</td>
+        </tr>
+        <tr>
+            <td rowspan="15"></td>
+            <td class="aligncenter" colspan="2">CASH POSITION</td>
+            <td class="aligncenter" colspan="2">BUDGET AND ALLOTMENT</td>
+        </tr>
+        <tr>
+            <td class="">Opening Balance (1400 balance)</td>
+            <td class="">@Model.LocalData.OpeningBalances[1].OpeningAmount.ToString().Substring(0, 3)</td>
+            <td class="">Total Approved Budget</td>
+            <td class="">@Model.CashManagementData.BATAB.ToString().Substring(0, 5)</td>
+        </tr>
+        <tr>
+            <td class="">Receipts</td>
+            <td class="">0</td>
+            <td class="">Total Allotments released</td>
+            <td class="">@Model.CashManagementData.BATAR.ToString().Substring(0, 5)</td>
+        </tr>
+        <tr>
+            <td class="">Total Funds Available</td>
+            <td class="">@Model.LocalData.OpeningBalances[1].OpeningAmount.ToString().Substring(0, 4)</td>
+            <td class="">Expenditures</td>
+           <td class="">@Model.CashManagementData.BAExpenditure.ToString().Substring(0, 3)</td>
+        </tr>
+        <tr>
+            <td class="">Expenditures</td>
+            <td class="">@Model.CashManagementData.BAExpenditure.ToString().Substring(0, 3)</td>
+            <td class="">Unspent Allotment</td>
+            <td class="">@Model.CashManagementData.BAUspentA.ToString().Substring(0, 5)</td>
+        </tr>
+        <tr>
+            <td class="grey">Net Funds Available</td>
+            <td class="grey">@Model.NetFundsAvailable.ToString().Substring(0, 4)</td>
+            <td class="grey">Allotments' Cash Requirement</td>
+            <td class="grey">@Model.AllotCashRequire.ToString().Substring(0, 5)</td>
+        </tr>
+    </tbody>
+
+    <!-- FOURTH SECTION -->
+    <tbody>
+        <tr>
+            <td colspan="1">IV</td>
+            <td class="aligncenter" colspan="4"> FUNDS RECEIVABLE (DOMISTIC REVENUE AND DONOR COMMITMENTS)</td>
+        </tr>
+        <tr>
+            <td rowspan="23"></td>
+            <td class="aligncenter">Sources</td>
+            <td class="aligncenter">Receivables</td>
+            <td class="aligncenter">Receipts</td>
+            <td class="aligncenter">Balance</td>
+        </tr>
+        <tr class="grey">
+            <td class="">Operating Budget</td>
+            <td class="">@Model.LocalData.FRDRDCGrantsOperatingBudget.ToString().Substring(0, 6)</td>
+            <td class="">@Model.FRReceivOperatingBudget.ToString().Substring(0, 5)</td>
+            <td class="">@Model.FRBalOB.ToString().Substring(0, 6) </td>
+        </tr>
+        <tr>
+            <td class="">Domestic Revenues</td>
+            <td class="">@Model.LocalData.receivablesAmounts[0].RecieveableAmount.ToString().Substring(0, 6)</td>
+            <td class="">@Model.CashManagementData.Totaldemrev.ToString().Substring(0, 5)</td>
+            <td class="">@Model.FRBalDR.ToString().Substring(0, 6)</td>
+        </tr>
+        <tr>
+            <td class="">Grants (Operating Budget)</td>
+            <td class="">@Model.LocalData.FRDRDCGrantsOperating.ToString().Substring(0, 6)</td>
+            <td class="">@Model.FRRGrantsOPBudet.ToString().Substring(0, 5)</td>
+            <td class="">@Model.FRBalGrants.ToString().Substring(0, 6)</td>
+        </tr>
+        <!-- new section -->
+        <tr>
+            <td class="borderless">LOTFA</td>
+            <td class="">@Model.LocalData.receivablesAmounts[1].RecieveableAmount.ToString().Substring(0, 5)</td>
+            <td class="">@Model.CashManagementData.FRRLotfa.ToString().Substring(0, 5)</td>
+            <td class="">@Model.FRBalLotfa.ToString().Substring(0, 6)</td>
+        </tr>
+        <tr>
+            <td class="borderless">CSTC-A MOD</td>
+            <td class="">@Model.LocalData.receivablesAmounts[2].RecieveableAmount.ToString().Substring(0, 5)</td>
+            <td class="">@Model.CashManagementData.FRRCTAMoD.ToString().Substring(0, 5)</td>
+            <td class="">@Model.FRBalMoD.ToString().Substring(0, 6)</td>
+        </tr>
+        <tr>
+            <td class="borderless">CSTC-A MOI</td>
+            <td class="">@Model.LocalData.receivablesAmounts[3].RecieveableAmount.ToString().Substring(0, 5)</td>
+            <td class="">@Model.CashManagementData.FRRCTAMoI.ToString().Substring(0, 5)</td>
+            <td class="">@Model.FRBalMoI.ToString().Substring(0, 6)</td>
+        </tr>
+        <tr>
+            <td class=""> TDF </td>
+            <td class="">(0, 4)</td>
+            <td class="">CashManagementData.FRRTdf</td>
+             <td class="">(0, 6)</td>
+        </tr>
+        <tr>
+            <td class="">IMF - Loan </td>
+                <td class="">(0, 5)</td>
+                <td class="">(0, 5)</td>
+                <td class="">(0, 6)</td>
+        </tr>
+        <tr class="grey">
+            <td class="">Disc - Development (Grants)</td>
+            <td class="">(0, 5)</td>
+            <td class="">Cell</td>
+            <td class="">Cell</td>
+        </tr>
+        <tr>
+            <td class="">European Commission</td>
+            <td class="">(0, 5)</td>
+            <td class=""></td>
+            <td class=""></td>
+        </tr>
+        <tr style="height: 25px">
+            <td class="">ARTF (IP +)</td>
+            <td class="">(0, 5)</td>
+            <td class="">(0, 5)</td>
+            <td class=""></td>
+        </tr>
+        <tr>
+            <td class="">0</td>
+            <td class="">THIRD</td>
+            <td class="">Cell</td>
+            <td class="">Cell</td>
+        </tr>
+        <tr>
+            <td class=""> European Commission (Refugee Return)</td>
+            <td class="">THIRD</td>
+            <td class="">Cell</td>
+            <td class="">Cell</td>
+        </tr>
+        <tr>
+            <td class=""> US - Development Aids</td>
+            <td class="">THIRD</td>
+            <td class="">Cell</td>
+            <td class="">Cell</td>
+        </tr>
+        <tr>
+            <td class="">Cash Reserves</td>
+            <td class="">THIRD</td>
+            <td class="">Cell</td>
+            <td class="">Cell</td>
+        </tr>
+        <tr class="grey">
+            <td rowspan="2" class="">Non-Disc - Development (Grants)</td>
+            <td class="aligncenter">Commitment</td>
+            <td class="aligncenter">Expenditure</td>
+            <td class="aligncenter">Balance</td>
+        </tr>
+        <tr class="grey">
+            <td class="">(0, 5)</td>
+            <td class="">(0, 5)</td>
+            <td class="">(0, 5)</td>
+        </tr>
+        <tr>
+            <td class="">ARTF / World Bank</td>
+            <td class="">(0, 5)</td>
+            <td class="">(0, 5)</td>
+            <td class="">(0, 5)</td>
+        </tr>
+        <tr>
+            <td class="">Asian Development Bnak (ADB)</td>
+            <td class=""></td>
+            <td class="">(0, 5)</td>
+            <td class="">(0, 5)</td>
+        </tr>
+        <tr>
+            <td class="">US & USAID</td>
+            <td class="">(0, 5)</td>
+            <td class="">(0, 5)</td>
+            <td class="">(0, 5)</td>
+        </tr>
+        <tr>
+            <td class="">Other Donors</td>
+            <td class="">((55)))</td>
+            <td class="">(55)</td>
+            <td class="">55</td>
+        </tr>
+
+
+
+    </tbody>
+</table>
+</div>
+</body>
+
+</html>
+{% endblock content %}
